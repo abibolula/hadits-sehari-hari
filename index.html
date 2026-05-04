@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hadits Sehari-hari — Cahaya Sunnah</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Amiri:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F7F3EB;
+    --cream-dark: #EDE7D9;
+    --gold: #C09A4E;
+    --gold-light: #D4B56A;
+    --gold-pale: #F0E4C4;
+    --ink: #1C1A14;
+    --ink-soft: #3D3A2F;
+    --ink-muted: #7A7464;
+    --teal: #2D6A5A;
+    --teal-light: #4A8C78;
+    --teal-pale: #D4EAE3;
+    --burgundy: #7A2D3A;
+    --burgundy-pale: #F0DCE0;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* ── GEOMETRIC ORNAMENT BACKGROUND ── */
+  .bg-ornament {
+    position: fixed;
+    top: -200px;
+    right: -200px;
+    width: 700px;
+    height: 700px;
+    opacity: 0.04;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 1.25rem 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(247, 243, 235, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(192, 154, 78, 0.2);
+  }
+
+  .nav-brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: 0.02em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .nav-brand span {
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+    background: var(--gold);
+    border-radius: 4px;
+    transform: rotate(45deg);
+    flex-shrink: 0;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--ink-muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--gold); }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 8rem 2rem 5rem;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  .hero-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s ease forwards;
+  }
+
+  .hero-eyebrow::before, .hero-eyebrow::after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 1px;
+    background: var(--gold);
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    font-weight: 500;
+    line-height: 1.05;
+    color: var(--ink);
+    margin-bottom: 1.25rem;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.35s ease forwards;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--teal);
+  }
+
+  .hero-subtitle {
+    font-size: 15px;
+    color: var(--ink-muted);
+    max-width: 480px;
+    line-height: 1.8;
+    margin-bottom: 3rem;
+    font-weight: 300;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.5s ease forwards;
+  }
+
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 36px;
+    background: var(--ink);
+    color: var(--cream);
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 2px;
+    transition: all 0.25s;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.65s ease forwards;
+  }
+
+  .hero-cta:hover {
+    background: var(--gold);
+    color: var(--ink);
+    transform: translateY(-2px);
+  }
+
+  .hero-cta svg { transition: transform 0.2s; }
+  .hero-cta:hover svg { transform: translateX(4px); }
+
+  /* large decorative arabic text in hero */
+  .hero-arabic-bg {
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Amiri', serif;
+    font-size: clamp(80px, 15vw, 180px);
+    color: var(--ink);
+    opacity: 0.03;
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+    line-height: 1;
+  }
+
+  /* decorative diamond row */
+  .diamonds {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin: 2rem auto 3rem;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.55s ease forwards;
+  }
+
+  .diamond {
+    width: 7px;
+    height: 7px;
+    background: var(--gold);
+    transform: rotate(45deg);
+  }
+
+  .diamond.sm {
+    width: 4px;
+    height: 4px;
+    opacity: 0.4;
+  }
+
+  /* ── SECTION: HADITS GRID ── */
+  .section {
+    position: relative;
+    z-index: 1;
+    padding: 5rem 3rem 6rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 4rem;
+  }
+
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 1rem;
+  }
+
+  .section-label::before, .section-label::after {
+    content: '';
+    display: block;
+    width: 30px;
+    height: 1px;
+    background: var(--gold-light);
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  /* ── FILTER PILLS ── */
+  .filters {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+  }
+
+  .pill {
+    padding: 7px 20px;
+    border: 1px solid var(--cream-dark);
+    border-radius: 100px;
+    background: transparent;
+    color: var(--ink-muted);
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: all 0.2s;
+  }
+
+  .pill:hover, .pill.active {
+    background: var(--ink);
+    color: var(--cream);
+    border-color: var(--ink);
+  }
+
+  /* ── HADITS CARDS ── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+  }
+
+  .card {
+    background: #FFFDF8;
+    border: 1px solid rgba(192, 154, 78, 0.18);
+    border-radius: 4px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeUp 0.6s ease both;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 60px rgba(28, 26, 20, 0.1);
+  }
+
+  .card-accent {
+    height: 4px;
+    background: var(--gold);
+  }
+
+  .card-accent.teal { background: var(--teal); }
+  .card-accent.burgundy { background: var(--burgundy); }
+
+  .card-body {
+    padding: 1.75rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .card-tag {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 2px;
+    background: var(--gold-pale);
+    color: #7A5C1A;
+  }
+
+  .card-tag.teal { background: var(--teal-pale); color: var(--teal); }
+  .card-tag.burgundy { background: var(--burgundy-pale); color: var(--burgundy); }
+
+  .card-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.75rem;
+    font-weight: 400;
+    color: var(--cream-dark);
+  }
+
+  .card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+
+  .arabic-block {
+    background: var(--cream);
+    border-radius: 3px;
+    padding: 1rem 1.25rem;
+    direction: rtl;
+    text-align: right;
+    font-family: 'Amiri', serif;
+    font-size: 1.45rem;
+    line-height: 2;
+    color: var(--ink);
+    border-right: 3px solid var(--gold);
+    position: relative;
+  }
+
+  .arabic-block.teal-border { border-right-color: var(--teal); }
+  .arabic-block.burgundy-border { border-right-color: var(--burgundy); }
+
+  .translation {
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.75;
+    font-style: italic;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+  }
+
+  .card-source {
+    font-size: 11px;
+    color: var(--ink-muted);
+    letter-spacing: 0.04em;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--cream-dark);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: auto;
+  }
+
+  .card-source::before {
+    content: '';
+    display: inline-block;
+    width: 14px;
+    height: 1px;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+
+  /* ── FEATURED QUOTE BAND ── */
+  .quote-band {
+    position: relative;
+    z-index: 1;
+    background: var(--ink);
+    padding: 6rem 3rem;
+    text-align: center;
+    overflow: hidden;
+  }
+
+  .quote-band::before {
+    content: '❝';
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 200px;
+    color: white;
+    opacity: 0.03;
+    font-family: serif;
+    line-height: 1;
+  }
+
+  .quote-arabic {
+    font-family: 'Amiri', serif;
+    font-size: clamp(2rem, 5vw, 4rem);
+    color: var(--gold-light);
+    direction: rtl;
+    line-height: 1.8;
+    margin-bottom: 2rem;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .quote-translation {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    color: rgba(247, 243, 235, 0.7);
+    font-style: italic;
+    max-width: 600px;
+    margin: 0 auto 1.5rem;
+    line-height: 1.7;
+  }
+
+  .quote-source {
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  /* ── STATS STRIP ── */
+  .stats-strip {
+    position: relative;
+    z-index: 1;
+    background: var(--gold-pale);
+    border-top: 1px solid rgba(192, 154, 78, 0.25);
+    border-bottom: 1px solid rgba(192, 154, 78, 0.25);
+    padding: 2.5rem 3rem;
+    display: flex;
+    justify-content: center;
+    gap: 4rem;
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 1;
+    background: var(--ink);
+    color: var(--cream);
+    padding: 4rem 3rem 3rem;
+    text-align: center;
+  }
+
+  .footer-arabic {
+    font-family: 'Amiri', serif;
+    font-size: 2rem;
+    color: var(--gold-light);
+    margin-bottom: 0.5rem;
+  }
+
+  .footer-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    color: rgba(247, 243, 235, 0.5);
+    margin-bottom: 2rem;
+  }
+
+  .footer-divider {
+    width: 60px;
+    height: 1px;
+    background: var(--gold);
+    margin: 0 auto 2rem;
+  }
+
+  .footer-copy {
+    font-size: 12px;
+    color: rgba(247, 243, 235, 0.3);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── ORNAMENT SVG ── */
+  .ornament-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 1rem 0 3.5rem;
+  }
+
+  .ornament-divider .line {
+    width: 80px;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--gold));
+  }
+
+  .ornament-divider .line.r {
+    background: linear-gradient(to left, transparent, var(--gold));
+  }
+
+  .ornament-center {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+  }
+
+  .od {
+    width: 5px;
+    height: 5px;
+    background: var(--gold);
+    transform: rotate(45deg);
+  }
+
+  .od.sm {
+    width: 3px;
+    height: 3px;
+    opacity: 0.5;
+  }
+
+  /* mobile */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .section { padding: 4rem 1.5rem; }
+    .stats-strip { gap: 2rem; padding: 2rem 1.5rem; }
+    .quote-band { padding: 4rem 1.5rem; }
+    footer { padding: 3rem 1.5rem 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- BG ORNAMENT -->
+<svg class="bg-ornament" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <polygon points="200,10 390,110 390,290 200,390 10,290 10,110" stroke="#C09A4E" stroke-width="1" fill="none"/>
+  <polygon points="200,40 360,120 360,280 200,360 40,280 40,120" stroke="#C09A4E" stroke-width="0.5" fill="none"/>
+  <polygon points="200,70 330,130 330,270 200,330 70,270 70,130" stroke="#C09A4E" stroke-width="0.5" fill="none"/>
+  <circle cx="200" cy="200" r="120" stroke="#C09A4E" stroke-width="0.5" fill="none"/>
+  <circle cx="200" cy="200" r="80" stroke="#C09A4E" stroke-width="0.5" fill="none"/>
+  <line x1="200" y1="10" x2="200" y2="390" stroke="#C09A4E" stroke-width="0.3"/>
+  <line x1="10" y1="200" x2="390" y2="200" stroke="#C09A4E" stroke-width="0.3"/>
+  <line x1="10" y1="110" x2="390" y2="290" stroke="#C09A4E" stroke-width="0.3"/>
+  <line x1="10" y1="290" x2="390" y2="110" stroke="#C09A4E" stroke-width="0.3"/>
+</svg>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">
+    <span></span>
+    Cahaya Sunnah
+  </div>
+  <ul class="nav-links">
+    <li><a href="#hadits">Hadits</a></li>
+    <li><a href="#tentang">Tentang</a></li>
+    <li><a href="#berbagi">Berbagi</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">Koleksi Hadits Pilihan</div>
+  <h1 class="hero-title">Cahaya Sunnah<br><em>Nabi Muhammad ﷺ</em></h1>
+  <div class="diamonds">
+    <div class="diamond sm"></div>
+    <div class="diamond"></div>
+    <div class="diamond sm"></div>
+    <div class="diamond"></div>
+    <div class="diamond sm"></div>
+  </div>
+  <p class="hero-subtitle">
+    Himpunan hadits sahih sebagai pedoman dan cahaya dalam kehidupan sehari-hari seorang Muslim.
+  </p>
+  <a href="#hadits" class="hero-cta">
+    Jelajahi Hadits
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+      <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </a>
+  <div class="hero-arabic-bg">الحديث النبوي</div>
+</section>
+
+<!-- STATS STRIP -->
+<div class="stats-strip reveal" id="tentang">
+  <div class="stat">
+    <div class="stat-num">10</div>
+    <div class="stat-label">Hadits Pilihan</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">5</div>
+    <div class="stat-label">Kategori Tema</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">3</div>
+    <div class="stat-label">Perawi Utama</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">∞</div>
+    <div class="stat-label">Manfaat Diamalkan</div>
+  </div>
+</div>
+
+<!-- QUOTE BAND -->
+<div class="quote-band reveal">
+  <div class="quote-arabic">خَيْرُ النَّاسِ أَنْفَعُهُمْ لِلنَّاسِ</div>
+  <p class="quote-translation">"Sebaik-baik manusia adalah yang paling bermanfaat bagi manusia."</p>
+  <div class="quote-source">HR. Ahmad &nbsp;·&nbsp; Ath-Thabrani &nbsp;·&nbsp; Hasan</div>
+</div>
+
+<!-- HADITS SECTION -->
+<section class="section" id="hadits">
+  <div class="section-header reveal">
+    <div class="section-label">Bimbingan Nabi ﷺ</div>
+    <h2 class="section-title">Hadits Sehari-hari</h2>
+    <div class="ornament-divider">
+      <div class="line"></div>
+      <div class="ornament-center">
+        <div class="od sm"></div>
+        <div class="od"></div>
+        <div class="od sm"></div>
+      </div>
+      <div class="line r"></div>
+    </div>
+  </div>
+
+  <!-- FILTERS -->
+  <div class="filters reveal">
+    <button class="pill active" onclick="filter('semua', this)">Semua</button>
+    <button class="pill" onclick="filter('akidah', this)">Akidah</button>
+    <button class="pill" onclick="filter('akhlak', this)">Akhlak</button>
+    <button class="pill" onclick="filter('sosial', this)">Sosial</button>
+    <button class="pill" onclick="filter('ilmu', this)">Ilmu</button>
+    <button class="pill" onclick="filter('dakwah', this)">Dakwah</button>
+  </div>
+
+  <!-- CARDS -->
+  <div class="grid" id="grid">
+
+    <div class="card" data-tag="akidah">
+      <div class="card-accent"></div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-tag">Akidah</span>
+          <span class="card-num">01</span>
+        </div>
+        <div class="card-title">Niat & Keikhlasan</div>
+        <div class="arabic-block">إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ</div>
+        <div class="translation">"Sesungguhnya amalan itu bergantung pada niatnya."</div>
+        <div class="card-source">HR. Bukhari &amp; Muslim</div>
+      </div>
+    </div>
+
+    <div class="card" data-tag="akhlak">
+      <div class="card-accent teal"></div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-tag teal">Akhlak</span>
+          <span class="card-num">02</span>
+        </div>
+        <div class="card-title">Menahan Amarah</div>
+        <div class="arabic-block teal-border">لاَ تَغْضَبْ وَلَكَ الْجَنَّةُ</div>
+        <div class="translation">"Jangan marah, maka bagimu surga."</div>
+        <div class="card-source">HR. Ath-Thabrani, Shahih</div>
+      </div>
+    </div>
+
+    <div class="card" data-tag="akhlak">
+      <div class="card-accent teal"></div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-tag teal">Akhlak</span>
+          <span class="card-num">03</span>
+        </div>
+        <div class="card-title">Berkata Baik atau Diam</div>
+        <div class="arabic-block teal-border">مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ</div>
+        <div class="translation">"Barangsiapa beriman kepada Allah dan hari akhir, hendaklah berkata baik atau diam."</div>
+        <div class="card-source">HR. Bukhari &amp; Muslim</div>
+      </div>
+    </div>
+
+    <div class="card" data-tag="sosial">
+      <div class="card-accent burgundy"></div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-tag burgundy">Sosial</span>
+          <span class="card-num">04</span>
+        </div>
+        <div class="card-title">Cinta Sesama Muslim</div>
+        <div class="arabic-block burgundy-border">لاَ يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لأَخِيهِ مَا يُحِبُّ لِنَفْسِهِ</div>
+        <div class="translation">"Tidak beriman salah seorang di antara kalian hingga dia mencintai saudaranya sebagaimana dia mencintai dirinya sendiri."</div>
+        <div class="card-source">HR. Bukhari &amp; Muslim</div>
+      </div>
+    </div>
+
+    <div class="card" data-tag="ilmu">
+      <div class="card-accent"></div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-tag">Ilmu</span>
+          <span class="card-num">05</span>
+        </div>
+        <div class="card-title">Menuntut Ilmu</div>
+        <div class="arabic-block">مَنْ سَلَكَ طَرِيقًا يَلْتَمِسُ فِيهِ عِلْمًا سَهَّلَ اللَّهُ لَهُ بِهِ طَرِيقًا إِلَى الْجَنَّةِ</div>
+        <div class="translation">"Barangsiapa menempuh jalan untuk menuntut ilmu, maka Allah mudahkan jalannya menuju surga."</div>
+        <div class="card-source">HR. Muslim</div>
+      </div>
+    </div>
+
+    <div class="card" data-tag="sosial">
+      <div class="card-accent burgundy"></div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-tag burgundy">Sosial</span>
+          <span class="card-num">06</span>
+        </div>
+        <div class="card-title">Bermanfaat bagi Sesama</div>
+        <div class="arabic-block burgundy-border">خَيْرُ النَّاسِ أَنْفَعُهُمْ لِلنَّاسِ</div>
+        <div class="translation">"Sebaik-baik manusia adalah yang paling bermanfaat bagi manusia."</div>
+        <div class="card-source">HR. Ahmad, Ath-Thabrani, Hasan</div>
+      </div>
+    </div>
+
+    <div class="card" data-tag="akhlak">
+      <div class="card-accent teal"></div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-tag teal">Akhlak</span>
+          <span class="card-num">07</span>
+        </div>
+        <div class="card-title">Meninggalkan Hal Tak Berguna</div>
+        <div class="arabic-block teal-border">مِنْ حُسْنِ إِسْلاَمِ الْمَرْءِ تَرْكُهُ مَا لاَ يَعْنِيهِ</div>
+        <div class="translation">"Di antara tanda kebaikan Islam seseorang adalah meninggalkan hal yang tidak bermanfaat baginya."</div>
+        <div class="card-source">HR. Tirmidzi</div>
+      </div>
+    </div>
+
+    <div class="card" data-tag="dakwah">
+      <div class="card-accent"></div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-tag">Dakwah</span>
+          <span class="card-num">08</span>
+        </div>
+        <div class="card-title">Menyampaikan Kebenaran</div>
+        <div class="arabic-block">بَلِّغُوا عَنِّي وَلَوْ آيَةً</div>
+        <div class="translation">"Sampaikanlah dariku walau hanya satu ayat."</div>
+        <div class="card-source">HR. Bukhari</div>
+      </div>
+    </div>
+
+    <div class="card" data-tag="akhlak">
+      <div class="card-accent teal"></div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-tag teal">Akhlak</span>
+          <span class="card-num">09</span>
+        </div>
+        <div class="card-title">Keutamaan Akhlak Mulia</div>
+        <div class="arabic-block teal-border">إِنَّمَا بُعِثْتُ لأُتَمِّمَ مَكَارِمَ الأَخْلاَقِ</div>
+        <div class="translation">"Sesungguhnya aku diutus hanya untuk menyempurnakan kesalehan akhlak."</div>
+        <div class="card-source">HR. Al-Baihaqi, Shahih</div>
+      </div>
+    </div>
+
+    <div class="card" data-tag="akidah">
+      <div class="card-accent"></div>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="card-tag">Akidah</span>
+          <span class="card-num">10</span>
+        </div>
+        <div class="card-title">Kebersihan Sebagian dari Iman</div>
+        <div class="arabic-block">الطُّهُورُ شَطْرُ الإِيمَانِ</div>
+        <div class="translation">"Bersuci (kebersihan) itu sebagian dari iman."</div>
+        <div class="card-source">HR. Muslim</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="berbagi">
+  <div class="footer-arabic">بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ</div>
+  <div class="footer-text">Dengan menyebut nama Allah Yang Maha Pengasih lagi Maha Penyayang</div>
+  <div class="footer-divider"></div>
+  <p class="footer-copy">Semoga bermanfaat &nbsp;·&nbsp; Barakallahu fiikum &nbsp;·&nbsp; © 2026 Cahaya Sunnah</p>
+</footer>
+
+<script>
+  // Filter logic
+  function filter(tag, btn) {
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    const cards = document.querySelectorAll('.card');
+    cards.forEach((card, i) => {
+      const match = tag === 'semua' || card.dataset.tag === tag;
+      card.style.display = match ? 'flex' : 'none';
+      if (match) {
+        card.style.animationDelay = (i * 0.07) + 's';
+        card.classList.remove('fadeUp');
+        void card.offsetWidth;
+      }
+    });
+  }
+
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  reveals.forEach(el => observer.observe(el));
+
+  // Card stagger on load
+  document.querySelectorAll('.card').forEach((card, i) => {
+    card.style.animationDelay = (0.7 + i * 0.07) + 's';
+  });
+</script>
+</body>
+</html>
